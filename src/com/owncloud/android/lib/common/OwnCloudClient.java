@@ -77,6 +77,8 @@ public class OwnCloudClient extends HttpClient {
     private int mInstanceNumber = 0;
 
     private Uri mBaseUri;
+    private Uri mLocalBaseUri;
+    private String mWifiSsid;
 
     private OwnCloudVersion mVersion = null;
 
@@ -99,6 +101,7 @@ public class OwnCloudClient extends HttpClient {
 
     private String mRedirectedLocation;
 
+    // TODO Check when to use the following constructors
     /**
      * Constructor
      */
@@ -130,6 +133,38 @@ public class OwnCloudClient extends HttpClient {
 
         clearCredentials();
     }
+    public OwnCloudClient(Uri baseUri, Uri localBaseUri, String wifiSsid, HttpConnectionManager connectionMgr) {
+        super(connectionMgr);
+
+        if (baseUri == null) {
+            throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
+        }
+        mBaseUri = baseUri;
+        mLocalBaseUri = localBaseUri;
+        mWifiSsid = wifiSsid;
+
+
+        mInstanceNumber = sIntanceCounter++;
+        Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
+
+        String userAgent = OwnCloudClientManagerFactory.getUserAgent();
+        getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
+        getParams().setParameter(
+                PARAM_PROTOCOL_VERSION,
+                HttpVersion.HTTP_1_1
+        );
+
+        getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+        getParams().setParameter(
+                PARAM_SINGLE_COOKIE_HEADER,             // to avoid problems with some web servers
+                PARAM_SINGLE_COOKIE_HEADER_VALUE
+        );
+
+        applyProxySettings();
+
+        clearCredentials();
+    }
+
 
 
     private void applyProxySettings() {

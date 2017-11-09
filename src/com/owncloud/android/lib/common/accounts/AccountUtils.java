@@ -43,6 +43,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentials;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentialsFactory;
+import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
@@ -78,12 +79,74 @@ public class AccountUtils {
     public static String getBaseUrlForAccount(Context context, Account account)
         throws AccountNotFoundException {
         AccountManager ama = AccountManager.get(context.getApplicationContext());
+
         String baseurl = ama.getUserData(account, Constants.KEY_OC_BASE_URL);
 
         if (baseurl == null)
             throw new AccountNotFoundException(account, "Account not found", null);
 
         return baseurl;
+    }
+
+    /**
+     * Extracts local url server from the account
+     *
+     * @param context               Valid Android {@link Context}, needed to access the {@link AccountManager}
+     * @param account               A stored ownCloud {@link Account}
+     * @return                      Full local URL to the server corresponding to 'account', ending in the base path
+     *                              common to all API endpoints.
+     * @throws AccountNotFoundException When 'account' is unknown for the AccountManager
+     */
+    public static String getLocalBaseUrlForAccount(Context context, Account account)
+            throws AccountNotFoundException {
+        AccountManager ama = AccountManager.get(context.getApplicationContext());
+
+        String baseurl = ama.getUserData(account, Constants.KEY_OC_LOCAL_BASE_URL);
+
+        if (baseurl == null)
+            throw new AccountNotFoundException(account, "Account not found", null);
+
+        return baseurl;
+    }
+
+    /**
+     * Extracts local wifi ssid from the account
+     *
+     * @param context               Valid Android {@link Context}, needed to access the {@link AccountManager}
+     * @param account               A stored ownCloud {@link Account}
+     * @return                      SSID of the WIFI network the server resides in.
+     * @throws AccountNotFoundException When 'account' is unknown for the AccountManager
+     */
+    public static String getLocalWifiSsidForAccount(Context context, Account account)
+            throws AccountNotFoundException {
+        AccountManager ama = AccountManager.get(context.getApplicationContext());
+
+        String wifiSsid = ama.getUserData(account, Constants.KEY_OC_LOCAL_WIFI_SSID);
+
+        if (wifiSsid == null)
+            throw new AccountNotFoundException(account, "Account not found", null);
+
+        return wifiSsid;
+    }
+
+    /**
+     * Extracts local wifi ssid from the account
+     *
+     * @param context               Valid Android {@link Context}, needed to access the {@link AccountManager}
+     * @param account               A stored ownCloud {@link Account}
+     * @return                      true if the local url should be used when connected to local wifi ssid
+     * @throws AccountNotFoundException When 'account' is unknown for the AccountManager
+     */
+    public static Boolean useLocalUrlForAccount(Context context, Account account)
+            throws AccountNotFoundException {
+        AccountManager ama = AccountManager.get(context.getApplicationContext());
+
+        String useLocalUrl = ama.getUserData(account, Constants.KEY_OC_USE_LOCAL_BASE_URL);
+
+        if (useLocalUrl == null)
+            throw new AccountNotFoundException(account, "Account not found", null);
+
+        return Boolean.valueOf(useLocalUrl);
     }
 
 
@@ -291,6 +354,23 @@ public class AccountUtils {
          * http://server/path or https://owncloud.server
          */
         public static final String KEY_OC_BASE_URL = "oc_base_url";
+
+        /**
+         * Local base url. This base url is used when connected to the wifi identified by oc_local_wifi_ssid / ie:
+         * http://server/path or https://owncloud.server
+         */
+        public static final String KEY_OC_LOCAL_BASE_URL = "oc_local_base_url";
+
+        /**
+         * SSID of the wifi network which the server resides in. Used to switch to local base url.
+         */
+        public static final String KEY_OC_LOCAL_WIFI_SSID = "oc_local_wifi_ssid";
+
+        /**
+         * Determine whether to use the local base url when connected to the local wifi.
+         */
+        public static final String KEY_OC_USE_LOCAL_BASE_URL = "oc_use_local_base_url";
+
         /**
          * Flag signaling if the ownCloud server can be accessed with OAuth2 access tokens.
          */

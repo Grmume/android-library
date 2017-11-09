@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentials;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentialsFactory;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -46,7 +47,13 @@ import android.net.Uri;
  */
 public class OwnCloudAccount {
 
-    private Uri mBaseUri; 
+    private Uri mBaseUri;
+
+    private Uri mLocalBaseUri;
+
+    private String mLocalWifiSsid;
+
+    private Boolean mUseLocalUrl;
     
     private OwnCloudCredentials mCredentials;
 
@@ -81,10 +88,14 @@ public class OwnCloudAccount {
             throw new AccountNotFoundException(mSavedAccount, "Account not found", null);
         }
         mBaseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(context, mSavedAccount));
+        mLocalBaseUri = Uri.parse(AccountUtils.getLocalBaseUrlForAccount(context, mSavedAccount));
+        mLocalWifiSsid = AccountUtils.getLocalWifiSsidForAccount(context, mSavedAccount);
+        mUseLocalUrl = AccountUtils.useLocalUrlForAccount(context, mSavedAccount);
+
         mDisplayName = ama.getUserData(mSavedAccount, AccountUtils.Constants.KEY_DISPLAY_NAME);
     }
 
-
+    // TODO CHeck if the following constructor is used in a place where the overloaded following methods are desired
     /**
      * Constructor for non yet saved OC accounts.
      *
@@ -100,6 +111,30 @@ public class OwnCloudAccount {
         mBaseUri = baseUri;
         mCredentials = credentials != null ?
             credentials : OwnCloudCredentialsFactory.getAnonymousCredentials();
+        String username = mCredentials.getUsername();
+        if (username != null) {
+            mSavedAccountName = AccountUtils.buildAccountName(mBaseUri, username);
+        }
+    }
+
+    /**
+     * Constructor for non yet saved OC accounts.
+     *
+     * @param baseUri           URI to the OC server to get access to.
+     * @param credentials       Credentials to authenticate in the server. NULL is valid for anonymous credentials.
+     */
+    public OwnCloudAccount(Uri baseUri, Uri localBaseUri, String wifiSsid, OwnCloudCredentials credentials) {
+        if (baseUri == null) {
+            throw new IllegalArgumentException("Parameter 'baseUri' cannot be null");
+        }
+        mSavedAccount = null;
+        mSavedAccountName = null;
+        mBaseUri = baseUri;
+        mLocalBaseUri = localBaseUri;
+        mUseLocalUrl = true;
+        mLocalWifiSsid = wifiSsid;
+        mCredentials = credentials != null ?
+                credentials : OwnCloudCredentialsFactory.getAnonymousCredentials();
         String username = mCredentials.getUsername();
         if (username != null) {
             mSavedAccountName = AccountUtils.buildAccountName(mBaseUri, username);
@@ -132,6 +167,12 @@ public class OwnCloudAccount {
     public Uri getBaseUri() {
         return mBaseUri;
     }
+
+    public Uri getLocalBaseUri() { return mLocalBaseUri; }
+
+    public String getLocalWifiSsid() { return mLocalWifiSsid; }
+
+    public Boolean useLocalUrl() { return mUseLocalUrl; }
             
     public OwnCloudCredentials getCredentials() {
         return mCredentials;

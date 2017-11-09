@@ -32,6 +32,7 @@
         In API >= 23 the do not exist anymore -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-sdk
         android:minSdkVersion="8"

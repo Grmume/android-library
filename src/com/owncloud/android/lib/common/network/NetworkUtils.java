@@ -45,6 +45,8 @@ import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 
 import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -201,6 +203,13 @@ public class NetworkUtils {
     	Log_OC.d(TAG, "Certificate - HashCode: " + cert.hashCode() + " "
     			+ Boolean.toString(knownServers.isCertificateEntry(Integer.toString(cert.hashCode()))));
     	return knownServers.isCertificateEntry(Integer.toString(cert.hashCode()));
+    }
+
+    public static String getCurrentWifiSsid(Context context)
+    {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        return wifiInfo.toString();
     }
 
 }
