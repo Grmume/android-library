@@ -85,7 +85,7 @@ public class GetRemoteUserQuotaOperation extends RemoteOperation {
         //Get the user
         try {
             OwnCloudCredentials credentials = client.getCredentials();
-            String url = client.getBaseUri() + OCS_ROUTE + credentials.getUsername();
+            String url = client.getAdjustedBaseUri() + OCS_ROUTE + credentials.getUsername();
 
             get = new GetMethod(url);
             get.setQueryString(new NameValuePair[]{new NameValuePair("format","json")});

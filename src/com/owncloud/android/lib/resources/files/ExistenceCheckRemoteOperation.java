@@ -77,7 +77,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
         PropFindMethod propfind = null;
         boolean previousFollowRedirects = client.getFollowRedirects();
         try {
-            propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(mPath),
+            propfind = new PropFindMethod(client.getAdjustedWebdavUri() + WebdavUtils.encodePath(mPath),
                     WebdavUtils.getAllPropSet(), DavConstants.DEPTH_0);
             client.setFollowRedirects(false);
             int status = client.executeMethod(propfind, TIMEOUT, TIMEOUT);

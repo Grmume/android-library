@@ -76,7 +76,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
     private boolean tryConnection(OwnCloudClient client) {
         boolean retval = false;
         GetMethod get = null;
-        String baseUrlSt = client.getBaseUri().toString();
+        String baseUrlSt = client.getAdjustedBaseUri().toString();
         try {
             get = new GetMethod(baseUrlSt + OwnCloudClient.STATUS_PATH);
 

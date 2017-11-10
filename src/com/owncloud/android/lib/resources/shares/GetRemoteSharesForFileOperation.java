@@ -78,7 +78,7 @@ public class GetRemoteSharesForFileOperation extends RemoteOperation {
 
         try {
             // Get Method
-            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            get = new GetMethod(client.getAdjustedBaseUri() + ShareUtils.SHARING_API_PATH);
 
             // Add Parameters to Get Method
             get.setQueryString(new NameValuePair[]{
@@ -99,7 +99,7 @@ public class GetRemoteSharesForFileOperation extends RemoteOperation {
                     new ShareXMLParser()
                 );
                 parser.setOwnCloudVersion(client.getOwnCloudVersion());
-                parser.setServerBaseUri(client.getBaseUri());
+                parser.setServerBaseUri(client.getAdjustedBaseUri());
                 result = parser.parse(response);
 
                 if (result.isSuccess()) {

@@ -52,6 +52,7 @@ import com.owncloud.android.lib.common.authentication.OwnCloudCredentials;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
@@ -413,11 +414,44 @@ public class OwnCloudClient extends HttpClient {
             getHttpConnectionManager().getParams().setConnectionTimeout(defaultConnectionTimeout);
         }
     }
-
+    // TODO Check where the following function is used.
     public Uri getWebdavUri() {
         return Uri.parse(mBaseUri + WEBDAV_PATH_4_0);
     }
 
+    public Uri getLocalWebdavUri() {
+        return Uri.parse(mLocalBaseUri + WEBDAV_PATH_4_0);
+    }
+
+    /**
+     * Return the Base Uri of the server when connected to some random network but the
+     * local base uri when connected to the local wifi.
+     * @return
+     */
+    public Uri getAdjustedBaseUri()
+    {
+        if(NetworkUtils.currentlyConnectedToSsid(mWifiSsid,mContext)) {
+            return mLocalBaseUri;
+        } else {
+            return mBaseUri;
+        }
+    }
+    /**
+     * Return the Webdav Uri of the server when connected to some random network but the
+     * local Webdav uri when connected to the local wifi.
+     * @return
+     */
+    public Uri getAdjustedWebdavUri()
+    {
+        if(NetworkUtils.currentlyConnectedToSsid(mWifiSsid,mContext)) {
+            return getLocalWebdavUri();
+        } else {
+            return getWebdavUri();
+        }
+    }
+
+
+    // TODO Check where this is used. Maybe also set LocalBaseUri (and localWifiSsid)
     /**
      * Sets the root URI to the ownCloud server.
      *
@@ -430,6 +464,28 @@ public class OwnCloudClient extends HttpClient {
             throw new IllegalArgumentException("URI cannot be NULL");
         }
         mBaseUri = uri;
+    }
+    public Uri getLocalBaseUri()
+    {
+        return mLocalBaseUri;
+    }
+    public void setLocalBaseUri(Uri uri) {
+        if (uri == null) {
+            throw new IllegalArgumentException("URI cannot be NULL");
+        }
+        mLocalBaseUri = uri;
+    }
+
+    public void setLocalWifiSsid(String ssid) {
+        if (ssid == null) {
+            throw new IllegalArgumentException("Ssid cannot be NULL");
+        }
+        mWifiSsid = ssid;
+    }
+
+    public String getLocalWifiSsid()
+    {
+        return mWifiSsid;
     }
 
     public Uri getBaseUri() {

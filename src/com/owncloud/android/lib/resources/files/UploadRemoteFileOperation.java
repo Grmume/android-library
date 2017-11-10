@@ -103,7 +103,7 @@ public class UploadRemoteFileOperation extends RemoteOperation {
                 new DefaultHttpMethodRetryHandler(0, false)
             );
 
-            mPutMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+            mPutMethod = new PutMethod(client.getAdjustedWebdavUri() + WebdavUtils.encodePath(mRemotePath));
 
             if (mCancellationRequested.get()) {
                 // the operation was cancelled before getting it's turn to be executed in the queue of uploads

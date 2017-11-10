@@ -59,7 +59,7 @@ public class GetRemoteShareOperation extends RemoteOperation {
 
         // Get the response
         try {
-            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + Long.toString(mRemoteId));
+            get = new GetMethod(client.getAdjustedBaseUri() + ShareUtils.SHARING_API_PATH + "/" + Long.toString(mRemoteId));
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             status = client.executeMethod(get);
@@ -73,7 +73,7 @@ public class GetRemoteShareOperation extends RemoteOperation {
                 );
                 parser.setOneOrMoreSharesRequired(true);
                 parser.setOwnCloudVersion(client.getOwnCloudVersion());
-                parser.setServerBaseUri(client.getBaseUri());
+                parser.setServerBaseUri(client.getAdjustedBaseUri());
                 result = parser.parse(response);
 
             } else {

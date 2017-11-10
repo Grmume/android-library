@@ -194,7 +194,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
 
         try {
             // Post Method
-            post = new PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            post = new PostMethod(client.getAdjustedBaseUri() + ShareUtils.SHARING_API_PATH);
 
             post.setRequestHeader("Content-Type",
                     "application/x-www-form-urlencoded; charset=utf-8"); // necessary for special characters
@@ -237,7 +237,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
                 );
                 parser.setOneOrMoreSharesRequired(true);
                 parser.setOwnCloudVersion(client.getOwnCloudVersion());
-                parser.setServerBaseUri(client.getBaseUri());
+                parser.setServerBaseUri(client.getAdjustedBaseUri());
                 result = parser.parse(response);
 
                 if (result.isSuccess() && mGetShareDetails) {

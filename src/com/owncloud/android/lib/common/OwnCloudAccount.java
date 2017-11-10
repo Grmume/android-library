@@ -31,7 +31,7 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentials;
 import com.owncloud.android.lib.common.authentication.OwnCloudCredentialsFactory;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.owncloud.android.lib.common.network.NetworkUtils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -166,6 +166,21 @@ public class OwnCloudAccount {
 
     public Uri getBaseUri() {
         return mBaseUri;
+    }
+
+    /**
+     * Return the Base Uri of the server when connected to some random network but the
+     * local base uri when connected to the local wifi.
+     * @param context
+     * @return
+     */
+    public Uri getAdjustedUri(Context context)
+    {
+        if(NetworkUtils.currentlyConnectedToSsid(mLocalWifiSsid,context)) {
+            return mLocalBaseUri;
+        } else {
+            return mBaseUri;
+        }
     }
 
     public Uri getLocalBaseUri() { return mLocalBaseUri; }

@@ -209,7 +209,12 @@ public class NetworkUtils {
     {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        return wifiInfo.toString();
+        return wifiInfo.getSSID().toString();
+    }
+
+    public static Boolean currentlyConnectedToSsid(String ssid, Context context)
+    {
+        return ssid.equals(getCurrentWifiSsid(context));
     }
 
 }

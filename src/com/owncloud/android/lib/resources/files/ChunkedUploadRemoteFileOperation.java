@@ -24,10 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Random;
@@ -38,7 +36,6 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -83,8 +80,8 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             }
 
             long offset = 0;
-            String uriPrefix = client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath) +
-                "-chunking-" + Math.abs((new Random()).nextInt(9000) + 1000) + "-";
+           String uriPrefix = client.getAdjustedBaseUri() + WebdavUtils.encodePath(mRemotePath) +
+                    "-chunking-" + Math.abs((new Random()).nextInt(9000) + 1000) + "-";
             long totalLength = file.length();
             long chunkCount = (long) Math.ceil((double) totalLength / CHUNK_SIZE);
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);

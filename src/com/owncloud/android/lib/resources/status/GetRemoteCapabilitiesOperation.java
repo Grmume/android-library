@@ -120,7 +120,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
         GetMethod get = null;
 
         try {
-            Uri requestUri = client.getBaseUri();
+            Uri requestUri = client.getAdjustedBaseUri();
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(OCS_ROUTE);    // avoid starting "/" in this method
             uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);

@@ -79,7 +79,7 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
 
         try {
             String uri =
-                client.getBaseUri() + NON_OFFICIAL_AVATAR_PATH +
+                client.getAdjustedBaseUri() + NON_OFFICIAL_AVATAR_PATH +
                 client.getCredentials().getUsername() + "/" + mDimension;
             ;
             Log_OC.d(TAG, "avatar URI: " + uri);
